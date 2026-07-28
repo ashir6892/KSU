@@ -53,6 +53,9 @@ data class HomeUiState(
 
     val hasUpdate: Boolean
         get() = latestVersionInfo.versionCode > currentManagerVersionCode
+
+    val canJailbreak: Boolean
+        get() = ksuVersion == null && kernelVersion.isGKI() && (isSELinuxPermissive || isRootAvailable)
 }
 
 @Immutable

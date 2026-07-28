@@ -257,6 +257,12 @@ fun unloadKernelSU(): Boolean {
     return result
 }
 
+fun lateLoadKernelSU(): Boolean {
+    val result = execKsud("late-load --package-name ${BuildConfig.APPLICATION_ID}", true, true)
+    Log.i(TAG, "late-load kernelsu result: $result")
+    return result
+}
+
 @Parcelize
 sealed class LkmSelection : Parcelable {
     @Parcelize

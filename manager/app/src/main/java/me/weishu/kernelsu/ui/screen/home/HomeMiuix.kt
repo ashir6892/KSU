@@ -374,7 +374,7 @@ private fun StatusCard(
                                 )
                             },
                             endActions = {
-                                if (state.isSELinuxPermissive) {
+                                if (state.canJailbreak) {
                                     TextButton(
                                         text = stringResource(R.string.home_jailbreak),
                                         onClick = actions.onJailbreakClick,

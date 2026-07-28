@@ -25,6 +25,7 @@ import me.weishu.kernelsu.ui.UiMode
 import me.weishu.kernelsu.ui.component.dialog.rememberLoadingDialog
 import me.weishu.kernelsu.ui.navigation3.Navigator
 import me.weishu.kernelsu.ui.navigation3.Route
+import me.weishu.kernelsu.ui.util.lateLoadKernelSU
 import me.weishu.kernelsu.ui.util.unloadKernelSU
 import me.weishu.kernelsu.ui.viewmodel.HomeViewModel
 import kotlin.time.Duration.Companion.milliseconds
@@ -56,14 +57,33 @@ fun HomePager(
         onOpenUrl = uriHandler::openUri,
         onJailbreakClick = {
             loadingDialog.showLoading()
-            context.startService(Intent(context, MagicaService::class.java))
-            // Manager will be force-stopped and restarted by late-load on success.
-            // If that doesn't happen within timeout, jailbreak likely failed.
-            scope.launch(Dispatchers.IO) {
-                delay(30_000.milliseconds)
-                withContext(Dispatchers.Main) {
-                    loadingDialog.hide()
-                    Toast.makeText(context, R.string.jailbreak_timeout, Toast.LENGTH_LONG).show()
+            if (uiState.isSELinuxPermissive) {
+                context.startService(Intent(context, MagicaService::class.java))
+                // Manager will be force-stopped and restarted by late-load on success.
+                // If that doesn't happen within timeout, jailbreak likely failed.
+                scope.launch(Dispatchers.IO) {
+                    delay(30_000.milliseconds)
+                    withContext(Dispatchers.Main) {
+                        loadingDialog.hide()
+                        Toast.makeText(context, R.string.jailbreak_timeout, Toast.LENGTH_LONG).show()
+                    }
+                }
+            } else {
+                scope.launch(Dispatchers.IO) {
+                    val success = lateLoadKernelSU()
+                    withContext(Dispatchers.Main) {
+                        if (!success) {
+                            loadingDialog.hide()
+                            Toast.makeText(context, R.string.jailbreak_timeout, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    if (success) {
+                        delay(30_000.milliseconds)
+                        withContext(Dispatchers.Main) {
+                            loadingDialog.hide()
+                            Toast.makeText(context, R.string.jailbreak_timeout, Toast.LENGTH_LONG).show()
+                        }
+                    }
                 }
             }
         },

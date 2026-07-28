@@ -247,7 +247,7 @@ private fun StatusCard(
                     backgroundColor = MaterialTheme.colorScheme.primary
                 )
             }
-        } else if (notInstalled && state.isSELinuxPermissive) {
+        } else if (state.canJailbreak) {
             {
                 Button(
                     onClick = actions.onJailbreakClick,
