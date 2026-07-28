@@ -25,6 +25,7 @@ import me.weishu.kernelsu.ui.UiMode
 import me.weishu.kernelsu.ui.component.dialog.rememberLoadingDialog
 import me.weishu.kernelsu.ui.navigation3.Navigator
 import me.weishu.kernelsu.ui.navigation3.Route
+import me.weishu.kernelsu.ui.util.unloadKernelSU
 import me.weishu.kernelsu.ui.viewmodel.HomeViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -63,6 +64,20 @@ fun HomePager(
                 withContext(Dispatchers.Main) {
                     loadingDialog.hide()
                     Toast.makeText(context, R.string.jailbreak_timeout, Toast.LENGTH_LONG).show()
+                }
+            }
+        },
+        onUnjailbreakClick = {
+            loadingDialog.showLoading()
+            scope.launch(Dispatchers.IO) {
+                val success = unloadKernelSU()
+                withContext(Dispatchers.Main) {
+                    loadingDialog.hide()
+                    if (!success) {
+                        Toast.makeText(context, R.string.unjailbreak_failed, Toast.LENGTH_LONG).show()
+                    } else {
+                        viewModel.refresh()
+                    }
                 }
             }
         },

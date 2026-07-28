@@ -311,6 +311,20 @@ private fun StatusCard(
                                     )
                                 }
                             }
+                            if (state.isLateLoadMode) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp, 10.dp),
+                                    contentAlignment = Alignment.BottomEnd,
+                                ) {
+                                    TextButton(
+                                        text = stringResource(R.string.home_unjailbreak),
+                                        onClick = actions.onUnjailbreakClick,
+                                        colors = ButtonDefaults.textButtonColorsPrimary()
+                                    )
+                                }
+                            }
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()

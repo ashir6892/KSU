@@ -227,7 +227,19 @@ private fun StatusCard(
             }
         } else ""
 
-        val statusTrailing: (@Composable () -> Unit)? = if (ksuActive && workingMode.isNotEmpty()) {
+        val statusTrailing: (@Composable () -> Unit)? = if (ksuActive && state.isLateLoadMode) {
+            {
+                Button(
+                    onClick = actions.onUnjailbreakClick,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                ) {
+                    Text(stringResource(R.string.home_unjailbreak))
+                }
+            }
+        } else if (ksuActive && workingMode.isNotEmpty()) {
             {
                 StatusTag(
                     label = workingMode,

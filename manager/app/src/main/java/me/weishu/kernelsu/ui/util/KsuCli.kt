@@ -251,6 +251,12 @@ fun uninstallPermanently(
     return FlashResult(result)
 }
 
+fun unloadKernelSU(): Boolean {
+    val result = execKsud("unload", true, true)
+    Log.i(TAG, "unload kernelsu result: $result")
+    return result
+}
+
 @Parcelize
 sealed class LkmSelection : Parcelable {
     @Parcelize
